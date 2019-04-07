@@ -2,5 +2,6 @@
 
 export("%>%")
 export(draw_fs)
+export(find_ct)
 export(sample_fs)
 importFrom(magrittr,"%>%")

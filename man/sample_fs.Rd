@@ -4,7 +4,7 @@
 \alias{sample_fs}
 \title{Draw multiple samples from the feasible set given S and N}
 \usage{
-sample_fs(nspec, nind)
+sample_fs(nsamples, nspec, nind)
 }
 \arguments{
 \item{s}{how many species}
