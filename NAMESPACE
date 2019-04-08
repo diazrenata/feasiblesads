@@ -3,5 +3,6 @@
 export("%>%")
 export(draw_fs)
 export(find_ct)
+export(new_ct_criterion)
 export(sample_fs)
 importFrom(magrittr,"%>%")

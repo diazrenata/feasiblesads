@@ -7,7 +7,7 @@
 find_ct(unique_RADs)
 }
 \arguments{
-\item{unique_RADs}{a list of unique RADs with the same S and N}
+\item{unique_RADs}{a matrix unique RADs with the same S and N}
 }
 \value{
 vector of the central tendency of \code{unique_RADs}.
