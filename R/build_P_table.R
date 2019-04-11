@@ -56,7 +56,7 @@ return(ps)
 }
 }
 
-system.time(fill_ps(20, 1000, storeyn = TRUE, storepath = 'uniform_fs_sampling/'))
+system.time(fill_ps(20, 3000, storeyn = TRUE, storepath = 'uniform_fs_sampling/'))
 
 
 load('uniform_fs_sampling/p_table.Rds')
