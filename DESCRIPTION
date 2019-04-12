@@ -2,10 +2,10 @@ Package: feasiblesads
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
+    person(given = "Renata",
+           family = "Diaz",
            role = c("aut", "cre"),
-           email = "first.last@example.com")
+           email = "diaz.renata@ufl.edu")
 Description: What the package does (one paragraph)
 License: MIT + file LICENSE
 ByteCompile: true
@@ -14,4 +14,5 @@ LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 6.1.1
 Imports: 
-    magrittr
+    magrittr,
+    gmp
