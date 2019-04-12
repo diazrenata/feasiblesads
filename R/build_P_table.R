@@ -2,6 +2,22 @@
 
 library(gmp)
 
+fill_ks <- function(max_s, max_n){
+  # ks are the possible values for a given n given number of species and remaining abundance
+  kmax <- matrix(ncol = max_n + 1, nrow = max_s)
+
+  colnames(kmax) <- c(0:max_n)
+
+  for(i in 1:nrow(kmax)) {
+    for(j in 1:ncol(kmax)) {
+      kmax[i, j] <- floor((j-1)/i)
+    }
+  }
+
+  return(kmax)
+
+}
+
 fill_ps <- function(max_s, max_n, storeyn, storepath) {
 
 ps <- matrix(ncol = max_n + 1, nrow = max_s)
@@ -14,17 +30,7 @@ ps[1, ] = 1 # only one way to put any number of individuals into one species
 ps[, "0"] = 1 # only one way to put 0 individuals into any number of species
 ps[, "1"] = 1 # only one way to put 1 individual into any number of species
 
-
-# ks are the possible values for a given n given number of species and remaining abundance
-kmax <- matrix(ncol = max_n + 1, nrow = max_s)
-
-colnames(kmax) <- c(0:max_n)
-
-for(i in 1:nrow(kmax)) {
-  for(j in 1:ncol(kmax)) {
-    kmax[i, j] <- floor((j-1)/i)
-  }
-}
+kmax = fill_ks(max_s = max_s, max_n = max_n)
 
 p_lookup <- function(k, s, n) {
   this_p = ps[s-1, n - (s*k) + 1]
@@ -56,7 +62,7 @@ return(ps)
 }
 }
 
-system.time(fill_ps(20, 3000, storeyn = TRUE, storepath = 'uniform_fs_sampling/'))
+#system.time(fill_ps(20, 3000, storeyn = TRUE, storepath = 'uniform_fs_sampling/'))
+#load('uniform_fs_sampling/p_table.Rds')
 
 
-load('uniform_fs_sampling/p_table.Rds')
