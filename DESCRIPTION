@@ -17,4 +17,5 @@ Imports:
     magrittr,
     gmp
 Suggests: 
-    testthat
+    testthat, 
+    dplyr
