@@ -17,84 +17,82 @@ sample_fs = function(s, n, nsamples, storeyn = FALSE,
     ks <- fill_ks(s, n)
     
     sets <- matrix(NA, nrow = nsamples, ncol = s)
-    for(idx in seq_len(nsamples))
+    for (idx in seq_len(nsamples))
     {
-        
-        this_gnome = vector(length = s, mode = 'integer')
-        slots_remaining = s
-        n_remaining = n
-        
-        for(species_slot in 1:s) {
-            
-            if(s == 1) { # if s = 1 there is only one possible RAD.
-                this_gnome[1] = n
-            } else {
-                if(species_slot == 1) {     # first (lowest abundance) value is a boundary case
-                    # for the first one, the values of n range from 1 to ks[s, n+1]
-                    ns = 1:ks[s, n+1]
-                    
-                    # the probability that you select each possible n is
-                    # proportional to the # of partitions possible if you
-                    # were to choose that n.
-                    # divided by the total possible # of partitions across all choices of n.
-                    n_parts = vector(length = length(ns), mode = "character")
-                    p_ns = vector(length = length(ns), mode = "numeric")
-                    for(i in 1:length(n_parts)) {
-                        n_parts[i] = ps[s-1, n - (s * ns[i]) + 1]
-                    }
-                    # total partition is
-                    total_parts = 0
-                    for(i in 1:length(n_parts)) {
-                        total_parts = gmp::add.bigz(gmp::as.bigz(n_parts[i]), total_parts)
-                    }
-                    # probability of each n choice
-                    for(i in 1:length(n_parts)){
-                        p_ns[i] = as.numeric(gmp::as.bigq(gmp::as.bigz(n_parts[i]), total_parts))
-                    }
-                    
-                    this_gnome[species_slot] = sample(ns, size = 1, prob = p_ns)
-                    n_remaining = n_remaining - (s*this_gnome[species_slot])
-                    slots_remaining = slots_remaining - 1
-                    
-                } else if(species_slot < s){ # recursive probabilistic sampling
-                    # for the rest, the values of n range from
-                    # 0 to ks[slots_remaining, n_remaining + 1]
-                    ns = 0:ks[slots_remaining, n_remaining+1]
-                    
-                    # the probability that you select each possible n is
-                    # proportional to the # of partitions possible if you
-                    # were to choose that n.
-                    # divided by the total possible # of partitions across all choices of n.
-                    n_parts = vector(length = length(ns), mode = "character")
-                    p_ns = vector(length = length(ns), mode = "numeric")
-                    for(i in 1:length(n_parts)) {
-                        n_parts[i] = ps[slots_remaining-1, n_remaining - (slots_remaining * ns[i]) + 1]
-                    }
-                    # total partition is
-                    total_parts = 0
-                    for(i in 1:length(n_parts)) {
-                        total_parts = gmp::add.bigz(gmp::as.bigz(n_parts[i]), total_parts)
-                    }
-                    # probability of each n choice
-                    for(i in 1:length(n_parts)){
-                        p_ns[i] = as.numeric(gmp::as.bigq(gmp::as.bigz(n_parts[i]), total_parts))
-                    }
-                    
-                    this_increment = sample(ns, size = 1, prob = p_ns)
-                    this_gnome[species_slot] = this_gnome[species_slot - 1] + this_increment
-                    n_remaining = n_remaining - (slots_remaining*this_increment)
-                    slots_remaining = slots_remaining - 1
-                    
-                } else {
-                    this_gnome[species_slot] = this_gnome[species_slot - 1] + n_remaining
-                }
-            }
-            
-        }
-        
-        sets[idx, ] = this_gnome
+        sets[idx, ] <- send_gnome(s, n, ps, ks)
     }
     return(sets)
+}
+
+#' @title Draw a single sample from the feasible set
+#' 
+#' @description Draw a single sample from the feasible set of species abundance 
+#'   distributions with `s` species and `n` total individuals, uniformly
+#'   
+#' @inheritParams sample_fs
+#' @param ps the ps table for number of partitions
+#' @param ks the ks table of max partition sizes
+#' @return a vector of length `s` whose elements sum up to `n`, in non-
+#'   decreasing order
+#' @export
+send_gnome <- function(s, n, ps, ks)
+{
+    this_gnome = vector(length = s, mode = 'integer')
+    
+    if (s == 1) # if s = 1 there is only one possible RAD.
+    {
+        this_gnome[1] <- n
+        return(this_gnome)
+    }
+    
+    slots_remaining = s
+    n_remaining = n
+    current_size <- 0
+    for (species_slot in 1:s)
+    {
+        # final species slot
+        if (species_slot == s) {
+            this_gnome[species_slot] = current_size + n_remaining
+            break
+        }
+        
+        if(species_slot == 1) {
+            # first (lowest abundance) value is a boundary case
+            # for the first one, the values of n range from 1 to ks[s, n+1]
+            ns = 1:ks[slots_remaining, n_remaining + 1]
+        } else {
+            # recursive probabilistic sampling
+            # for the rest, the values of n range from
+            # 0 to ks[slots_remaining, n_remaining + 1]
+            ns = 0:ks[slots_remaining, n_remaining+1]
+        }
+        
+        # the probability that you select each possible n is
+        # proportional to the # of partitions possible if you
+        # were to choose that n.
+        # divided by the total possible # of partitions across all choices of n.
+        n_parts = ps[slots_remaining - 1, 
+                        n_remaining - (slots_remaining * ns) + 1]
+        
+        # total partition size
+        total_parts = gmp::sum.bigz(gmp::as.bigz(n_parts))
+        
+        # probability of each n choice
+        p_ns = as.numeric(gmp::as.bigq(gmp::as.bigz(n_parts), total_parts))
+        
+        # randomly select the next increment:
+        #   update the current_size, 
+        #   append it to figure out the current species_slot
+        #   compute the abundance and slots remaining
+        #   save the current increment size
+        this_increment = sample(ns, size = 1, prob = p_ns)
+        current_size <- current_size + this_increment
+        this_gnome[species_slot] = current_size
+        n_remaining = n_remaining - (slots_remaining * this_increment)
+        slots_remaining = slots_remaining - 1
+    }
+    
+    return(this_gnome)
 }
 
 #' @title Filter and tally frequency of distinct RADs
