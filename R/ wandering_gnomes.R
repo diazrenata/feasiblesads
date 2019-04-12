@@ -91,4 +91,14 @@ return(sets)
 
 system.time(sample_fs(3, 8, 1))
 
-feasible_sets = sample_fs(3, 8, 1000)
+feasible_sets = sample_fs(3, 8, 100000)
+
+sets_df = matrix(nrow = 100000, ncol = 3)
+for(i in 1:nrow(sets_df)) {
+  sets_df[i,] = unlist(feasible_sets[[i]])
+}
+library(dplyr)
+
+sets_df <- as.data.frame(sets_df) %>%
+  group_by(V1, V2, V3) %>%
+  tally()
