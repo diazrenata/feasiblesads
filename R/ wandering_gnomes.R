@@ -1,14 +1,16 @@
 library(gmp)
 source('R/build_P_table.R')
 
-s = 3
-n = 8
-
+sample_fs = function(s, n, nsamples) {
 ps <- fill_ps(s, n, storeyn = FALSE, storepath = NULL)
 
 # Once you have the ps table.
 # You also might as well make a ks table? looking up might be as slow as calculating, but whatever.
 ks <- fill_ks(s, n)
+
+sets = list()
+
+while(length(sets) < nsamples) {
 
 this_gnome = vector(length = s, mode = 'integer')
 slots_remaining = s
@@ -81,3 +83,12 @@ for(species_slot in 1:s) {
   }
 
 }
+
+sets[[length(sets) + 1]] = this_gnome
+}
+return(sets)
+}
+
+system.time(sample_fs(3, 8, 1))
+
+feasible_sets = sample_fs(3, 8, 1000)
