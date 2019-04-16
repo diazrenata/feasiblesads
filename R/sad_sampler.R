@@ -5,19 +5,18 @@
 #' @param nsamples how many samples to draw
 #' @param storeyn TRUE/FALSE whether to store the P table. If FALSE, returns the table.
 #' @param storepath path to store the P table.
+#' @param inpar run in parallel?
 #' @return matrix `nsamples` of ranked abundance distributions. Rows are samples and columns are species, sorted from least to most abundant.
 #' @export
 
 sample_fs = function(s, n, nsamples, storeyn = FALSE,
-                     storepath = NULL) {
+                     storepath = NULL, inpar = FALSE) {
   ps <- fill_ps(s, n, storeyn = storeyn, storepath = storepath)
 
   # Once you have the ps table you also might as well make a ks table? looking up might be as slow as calculating, but whatever.
   ks <- fill_ks(s, n)
 
-  sets = list()
-
-  while(length(sets) < nsamples) {
+    pull_fs <- function(ignore_me, s, n){
 
     this_gnome = vector(length = s, mode = 'integer')
     slots_remaining = s
@@ -91,9 +90,19 @@ sample_fs = function(s, n, nsamples, storeyn = FALSE,
 
     }
 
-    sets[[length(sets) + 1]] = this_gnome
+    return(this_gnome)
   }
 
+    if(inpar){
+      library(doParallel)
+      no_cores <- detectCores() - 1
+      registerDoParallel(cores=no_cores)
+      cl <- makeCluster(no_cores)
+      sets <- parLapply(cl, c(1:nsamples), fun = pull_fs, s = s, n = n)
+      stopCluster(cl)
+    } else {
+    sets <- lapply(1:nsamples, FUN = pull_fs, s = s, n= n)
+    }
 
   sets_matrix = matrix(nrow = nsamples, ncol = s)
   for(i in 1:nrow(sets_matrix)) {

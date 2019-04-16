@@ -4,7 +4,8 @@
 \alias{sample_fs}
 \title{Draw samples from the feasible set given S and N}
 \usage{
-sample_fs(s, n, nsamples, storeyn = FALSE, storepath = NULL)
+sample_fs(s, n, nsamples, storeyn = FALSE, storepath = NULL,
+  inpar = FALSE)
 }
 \arguments{
 \item{s}{the number of species}
@@ -16,6 +17,8 @@ sample_fs(s, n, nsamples, storeyn = FALSE, storepath = NULL)
 \item{storeyn}{TRUE/FALSE whether to store the P table. If FALSE, returns the table.}
 
 \item{storepath}{path to store the P table.}
+
+\item{inpar}{run in parallel?}
 }
 \value{
 matrix \code{nsamples} of ranked abundance distributions. Rows are samples and columns are species, sorted from least to most abundant.

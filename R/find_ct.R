@@ -9,45 +9,44 @@
 
 find_ct <- function(unique_RADs){
 
+  unique_RADs <- as.matrix(unique_RADs)
+
   S = ncol(unique_RADs)
   N = sum(unique_RADs[1, ])
 
-  a1 = 0
-  v1 = 0
 
-  for (i in 1:nrow(unique_RADs)) {
+ tally_in_common = function(species_index, focal_rad, sample_rads){
+    this_tally = length(which(sample_rads[,species_index] == focal_rad[species_index]))
+    this_tally = log(this_tally)
+    return(this_tally)
+  }
 
-    focal_rad = unique_RADs[i, ]
+  calculate_in_common = function(focal_rad, sample_rads) {
+    this_in_common = vapply(1:S, tally_in_common, focal_rad, sample_rads, FUN.VALUE = 1)
+    return(this_in_common)
+  }
 
-    in_common = vector()
+  in_common = list()
+  for(i in 1:nrow(unique_RADs)){
+    in_common[[i]] <- calculate_in_common(unique_RADs[i, ], unique_RADs)
+  }
 
-    for (j in 1:S) {
-      c = 0
+  in_common_a <- t(apply(unique_RADs, MARGIN = 1, FUN = calculate_in_common, sample_rads = unique_RADs))
 
-      for (k in 1:nrow(unique_RADs)) {
-        if(focal_rad[j] == unique_RADs[k, j]) {
-          c = c + 1
-        }
-      }
+  unique_RADs <- as.data.frame(unique_RADs)
+  unique_RADs$a = apply(in_common_a, MARGIN = 1, FUN = mean)
+  unique_RADs$v = apply(in_common_a, MARGIN = 1, FUN = var)
 
-      in_common = append(in_common, log(c))
+  xRAD <- dplyr::filter(unique_RADs, a == max(unique_RADs$a))
+  if(nrow(xRAD) > 1) {
+    xRAD <- dplyr::filter(xRAD, v == min(xRAD$v))
+    if(nrow(xRAD > 1)) {
+      xRAD <- xRAD[1, ]
+      print("multiple ct RADs")
     }
+  }
 
-    a2 = mean(in_common)
-    v2 = var(in_common)
-
-    if(a2 > a1) {
-      a1 = a2
-      v1 = v2
-      xRAD = focal_rad
-    } else if (a2 == a1) {
-      if(v2 < v1) {
-        a1 = a2
-        v1 = v2
-        xRAD = focal_rad
-      }
-    }
-    }
+  xRAD <- as.integer(dplyr::select(xRAD, -a, -v))
 
   return(xRAD)
 
