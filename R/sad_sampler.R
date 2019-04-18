@@ -11,6 +11,10 @@
 
 sample_fs = function(s, n, nsamples, storeyn = FALSE,
                      storepath = NULL, inpar = FALSE) {
+
+  if(s == 1) {
+    return(c(1))
+  }
   ps <- fill_ps(s, n, storeyn = storeyn, storepath = storepath)
 
   # Once you have the ps table you also might as well make a ks table? looking up might be as slow as calculating, but whatever.
