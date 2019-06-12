@@ -37,7 +37,7 @@ fill_ks <- function(max_s, max_n){
 #' @export
 
 fill_ps <- function(max_s, max_n, storeyn = TRUE,
-                    storepath = 'uniform_fs_sampling/') {
+                    storepath = "uniform_fs_sampling") {
 
 ps <- matrix(ncol = max_n + 1, nrow = max_s)
 
@@ -74,8 +74,8 @@ for(i in 2:nrow(ps)) {
 }
 
 if(storeyn) {
-  save(ps, file = paste0(storepath, "p_table.Rds"))
-} else {
-return(ps)
+  save(ps, file = file.path(storepath, "p_table.Rds"))
 }
+return(ps)
+
 }

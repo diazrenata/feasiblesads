@@ -1,0 +1,23 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+```{r setup}
+library(feasiblesads)
+```
+
+This package is functions & infrastructure to sample the feasible set for a SAD given S and N.
+
+For now it is used by various projects in RMD's other repos. 
+
+The `time-capsule` branch preserves the state of the repo for `diazrenata/conditionalsads`. Future work will be based on `master`. 
+
+For `S = 20` and `N = 100`...
+
+
+```{r sample a fs}
+fs_sample <- sample_fs(s = 20, n = 100, nsamples = 10, storeyn = TRUE, storepath = here::here("demo", "working-dir"))
+
+```
+

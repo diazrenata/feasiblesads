@@ -5,7 +5,7 @@
 \title{Build the partition counts table.}
 \usage{
 fill_ps(max_s, max_n, storeyn = TRUE,
-  storepath = "uniform_fs_sampling/")
+  storepath = "uniform_fs_sampling")
 }
 \arguments{
 \item{max_s}{max species}

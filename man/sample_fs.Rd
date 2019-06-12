@@ -4,8 +4,7 @@
 \alias{sample_fs}
 \title{Draw samples from the feasible set given S and N}
 \usage{
-sample_fs(s, n, nsamples, storeyn = FALSE, storepath = NULL,
-  inpar = FALSE)
+sample_fs(s, n, nsamples, storeyn = FALSE, storepath = NULL)
 }
 \arguments{
 \item{s}{the number of species}

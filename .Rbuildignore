@@ -1,5 +1,4 @@
 ^LICENSE\.md$
 ^feasiblesads\.Rproj$
 ^\.Rproj\.user$
-uniform_fs_sampling/
-playing.R
+demo/playing.R
