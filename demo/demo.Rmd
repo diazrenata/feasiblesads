@@ -17,7 +17,19 @@ For `S = 20` and `N = 100`...
 
 
 ```{r sample a fs}
-fs_sample <- sample_fs(s = 20, n = 100, nsamples = 10, storeyn = TRUE, storepath = here::here("demo", "working-dir"))
+fs_sample <- sample_fs(s = 20, n = 100, nsamples = 1000, storeyn = TRUE, storepath = here::here("demo", "working-dir"))
+
+head(fs_sample)
+
+fs_sample_tally <- tally_sets(fs_sample)
+
+head(fs_sample_tally)
 
 ```
 
+Central tendency following Locey & White...
+```{r get ct}
+fs_ct <- find_ct(fs_sample)
+
+fs_ct
+```
