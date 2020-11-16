@@ -17,5 +17,8 @@ Imports:
     magrittr,
     gmp
 Suggests: 
-    testthat, 
-    dplyr
+    testthat,
+    dplyr,
+    knitr,
+    rmarkdown
+VignetteBuilder: knitr

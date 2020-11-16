@@ -1,0 +1,102 @@
+---
+title: "Sampling the Space of Feasible Sets"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Sampling the Space of Feasible Sets}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+# Feasible Set Definition
+
+For $n \ge s \ge 1$, we define a feasible set as:
+$$
+\textbf{x} = \left(x_1, x_2, \dots, x_s\right)
+$$
+where
+$$
+x_i \in \mathbb{Z}^+\\
+x_i \le x_j \textrm{ for } i \le j\\
+\sum{x_i} = n
+$$
+
+In effect, a feasible set represents a partition of $n$ individuals among $s$ classes (e.g. taxonomic categories), and we are interested only in the sizes of those classes, disregarding their specific identity (i.e. the classes are interchangeable).
+
+In ecological parlance, a feasible set commonly represents a species-abundance distribution; though we note that we order the sizes of the classes in ascending, as opposed to descending order.
+
+# Feasible Set Space
+
+We define $F(s, n)$ to be the set of all possible feasible sets of a particular $s$ and $n$, and $f(s, n) = |F(s, n)|$ to be the cardinality of $F(s, n)$ (i.e. the number of feasible sets). We note that the values of $f(s, n)$ are related to XXX, (REF).
+
+## Alternative Representation for Feasible Sets
+
+First, we describe an alternative representation for feasible sets, where we describe the relative differences in sizes of consecutive classes instead of the sizes of the classes directly:
+$$
+\mathbf{y} = \left(y_1, y_2, \dots, y_s\right)
+$$
+where
+$$
+y_1 = x_1\\
+y_i = x_i - x_{i-1} \ge 0 \textrm{ for } i \ge 2
+$$
+
+Thus,
+\begin{align}
+x_1 &= y_1\\
+x_2 &= y_1 + y_2\\
+x_3 &= y_1 + y_2 + y_3\\
+&\vdots\\
+x_i &= \sum_{j=1}^{j=i}{y_j}
+\end{align}
+
+and 
+\begin{align}
+n &= x_1 + x_2 + \dots + x_s \\
+  &= s \cdot y_1 + (s-1) \cdot y_2 + \dots + 1 \cdot y_s
+\end{align}
+
+## Generating Feasible Sets
+
+We describe a generative approach for creating feasible sets.
+
+1. Set $i = 1$, the index of the class whose size will be determined next.<br />
+   Set $n_r = n$, the number of individuals remaining to be allocated.<br />
+   Set $s_r = s$, the number of classes reamining to be filled.
+
+2. Choose a value for $y_1$. The possible values are $[1, \lfloor \frac{n_r}{s_r} \rfloor]$.
+
+3. Compute $n_r$, the remaining un-allocated individuals, as $n_r = n_r - s_r \cdot y_i$.<br />
+Compute $s_r$, the remaining un-allocated classes, as $s_r = s_r - 1$.<br />
+Increment $i = i + 1$.
+
+4. Choose a value for $y_i$. The possible values are $[0, \lfloor \frac{n_r}{s_r}\rfloor]$.
+
+6. Repeat steps 3 and 4, until the feasible set is fully generated.
+
+## Counting Feasible Sets.
+
+Mirroring the generative approach, we can define $f(s, n)$ recursively.
+
+1. Define $p(s, n)$ to be the number of ways of allocating $n$ individuals among $s$ classes, and allowing the sizes of the classes to include 0.
+
+2. $f(s, n) = \sum_{y_1 = 1}^{y_1 = \lfloor \frac{n}{s} \rfloor}{p(s-1, n-s \cdot y_1)}$
+
+3. $p(s, n) = \sum_{y_i = 0}^{y_i = \lfloor \frac{n}{s} \rfloor}{p(s-1, n-s \cdot y_i)}$
+
+where $p(1, n) = 1$ (there is only way to allocate $n$ individuals among 1 class).
+
+## Sampling Feasible Sets.
+
+We can also sample $F(s, n)$ uniformly, using a similarly recursive approach.
+
+1. For all $y_1 \in [1, \lfloor\frac{n}{s}\rfloor]$, compute $p(s-1, n-s \cdot y_1)$.
+2. The sum of these values of $p$ determine the relative probabilities for the corresponding value of $y_1$.
+3. Choose $y_1$ based on the corresponding weights, $\displaystyle \frac{p(s-1, n-s \cdot y_1)}{\sum_{y_1}{p(s-1, n-s \cdot y_1)}}$
+4. Choose the remaining $y_i$ according to the corresponding values of $p(s, n)$ as used to count the feasible sets.
