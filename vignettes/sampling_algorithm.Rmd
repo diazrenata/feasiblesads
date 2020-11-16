@@ -33,7 +33,7 @@ In ecological parlance, a feasible set commonly represents a species-abundance d
 
 # Feasible Set Space
 
-We define $F(s, n)$ to be the set of all possible feasible sets of a particular $s$ and $n$, and $f(s, n) = |F(s, n)|$ to be the cardinality of $F(s, n)$ (i.e. the number of feasible sets). We note that the values of $f(s, n)$ are related to XXX, (REF).
+We define $F(s, n)$ to be the set of all possible feasible sets of a particular $s$ and $n$, and $f(s, n) = |F(s, n)|$ to be the cardinality of $F(s, n)$ (i.e. the number of feasible sets). We note that the values of $f(s, n)$ are identical to the number of partitions of $n$ into exactly $s$ parts, (REF).
 
 ## Alternative Representation for Feasible Sets
 
