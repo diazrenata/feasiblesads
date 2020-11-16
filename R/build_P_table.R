@@ -26,7 +26,7 @@ fill_ks <- function(max_s, max_n){
 
 #' @title Build the partition counts table.
 #'
-#' @description # Recursively build P(s, n) table where P(s, n) is the number of partitions of n into s, including 0s.
+#' @description Recursively build P(s, n) table where P(s, n) is the number of partitions of n into s, including 0s.
 #'
 #' @param max_s max species
 #' @param max_n max individuals

@@ -35,18 +35,18 @@ find_ct <- function(unique_RADs){
 
   unique_RADs <- as.data.frame(unique_RADs)
   unique_RADs$a = apply(in_common_a, MARGIN = 1, FUN = mean)
-  unique_RADs$v = apply(in_common_a, MARGIN = 1, FUN = var)
+  unique_RADs$v = apply(in_common_a, MARGIN = 1, FUN = stats::var)
 
-  xRAD <- dplyr::filter(unique_RADs, a == max(unique_RADs$a))
+  xRAD <- dplyr::filter(unique_RADs, .data$a == max(unique_RADs$a))
   if(nrow(xRAD) > 1) {
-    xRAD <- dplyr::filter(xRAD, v == min(xRAD$v))
+    xRAD <- dplyr::filter(xRAD, .data$v == min(xRAD$v))
     if(nrow(xRAD > 1)) {
       xRAD <- xRAD[1, ]
       print("multiple ct RADs")
     }
   }
 
-  xRAD <- as.integer(dplyr::select(xRAD, -a, -v))
+  xRAD <- as.integer(dplyr::select(xRAD, -.data$a, -.data$v))
 
   return(xRAD)
 

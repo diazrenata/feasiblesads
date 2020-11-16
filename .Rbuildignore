@@ -1,4 +1,4 @@
 ^LICENSE\.md$
 ^feasiblesads\.Rproj$
 ^\.Rproj\.user$
-demo/playing.R
+^demo$
