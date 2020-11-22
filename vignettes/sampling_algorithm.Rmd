@@ -1,6 +1,7 @@
 ---
 title: "Sampling the Space of Feasible Sets"
 output: rmarkdown::html_vignette
+bibliography: refs.bib
 vignette: >
   %\VignetteIndexEntry{Sampling the Space of Feasible Sets}
   %\VignetteEngine{knitr::rmarkdown}
@@ -33,7 +34,9 @@ In ecological parlance, a feasible set commonly represents a species-abundance d
 
 # Feasible Set Space
 
-We define $F(s, n)$ to be the set of all possible feasible sets of a particular $s$ and $n$, and $f(s, n) = |F(s, n)|$ to be the cardinality of $F(s, n)$ (i.e. the number of feasible sets). We note that the values of $f(s, n)$ are identical to the number of partitions of $n$ into exactly $s$ parts, (REF).
+We define $F(s, n)$ to be the set of all possible feasible sets of a particular $s$ and $n$, and $f(s, n) = |F(s, n)|$ to be the cardinality of $F(s, n)$ (i.e. the number of feasible sets). We note that the values of $f(s, n)$ are identical to the number of partitions of $n$ into exactly $s$ parts[^1].
+
+[^1]: $f(s, n)$, the number of partitions of $n$ into exactly $s$ parts is more commonly expressed via the related quantity, $p(s, n)$, the number of partitions of $s$ into at most $n$ parts by $f(s, n) = p(s-n, n)$. Early study of $p(s, n)$ was conducted by L. Euler; for an extensive history of the topic, see @Dickson_1919.
 
 ## Alternative Representation for Feasible Sets
 
@@ -84,19 +87,19 @@ Increment $i = i + 1$.
 
 Mirroring the generative approach, we can define $f(s, n)$ recursively.
 
-1. Define $p(s, n)$ to be the number of ways of allocating $n$ individuals among $s$ classes, and allowing the sizes of the classes to include 0.
+1. Define $r(s, n)$ to be the number of ways of allocating $n$ individuals among $s$ classes, and allowing the sizes of the classes to include 0.
 
-2. $f(s, n) = \sum_{y_1 = 1}^{y_1 = \lfloor \frac{n}{s} \rfloor}{p(s-1, n-s \cdot y_1)}$
+2. $f(s, n) = \sum_{y_1 = 1}^{y_1 = \lfloor \frac{n}{s} \rfloor}{r(s-1, n-s \cdot y_1)}$
 
-3. $p(s, n) = \sum_{y_i = 0}^{y_i = \lfloor \frac{n}{s} \rfloor}{p(s-1, n-s \cdot y_i)}$
+3. $r(s, n) = \sum_{y_i = 0}^{y_i = \lfloor \frac{n}{s} \rfloor}{r(s-1, n-s \cdot y_i)}$
 
-where $p(1, n) = 1$ (there is only way to allocate $n$ individuals among 1 class).
+where $r(1, n) = 1$ (there is only way to allocate $n$ individuals among 1 class).
 
 ## Sampling Feasible Sets.
 
 We can also sample $F(s, n)$ uniformly, using a similarly recursive approach.
 
-1. For all $y_1 \in [1, \lfloor\frac{n}{s}\rfloor]$, compute $p(s-1, n-s \cdot y_1)$.
-2. The sum of these values of $p$ determine the relative probabilities for the corresponding value of $y_1$.
-3. Choose $y_1$ based on the corresponding weights, $\displaystyle \frac{p(s-1, n-s \cdot y_1)}{\sum_{y_1}{p(s-1, n-s \cdot y_1)}}$
-4. Choose the remaining $y_i$ according to the corresponding values of $p(s, n)$ as used to count the feasible sets.
+1. For all $y_1 \in [1, \lfloor\frac{n}{s}\rfloor]$, compute $r(s-1, n-s \cdot y_1)$.
+2. The sum of these values of $r$ determine the relative probabilities for the corresponding value of $y_1$.
+3. Choose $y_1$ based on the corresponding weights, $\displaystyle \frac{r(s-1, n-s \cdot y_1)}{\sum_{y_1}{r(s-1, n-s \cdot y_1)}}$
+4. Choose the remaining $y_i$ according to the corresponding values of $r(s, n)$ as used to count the feasible sets.
