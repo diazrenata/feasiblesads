@@ -36,7 +36,7 @@ In ecological parlance, a feasible set commonly represents a species-abundance d
 
 We define $F(s, n)$ to be the set of all possible feasible sets of a particular $s$ and $n$, and $f(s, n) = |F(s, n)|$ to be the cardinality of $F(s, n)$ (i.e. the number of feasible sets). We note that the values of $f(s, n)$ are identical to the number of partitions of $n$ into exactly $s$ parts[^1].
 
-[^1]: $f(s, n)$, the number of partitions of $n$ into exactly $s$ parts is more commonly expressed via the related quantity, $p(s, n)$, the number of partitions of $s$ into at most $n$ parts by $f(s, n) = p(s-n, n)$. Early study of $p(s, n)$ was conducted by L. Euler; for an extensive history of the topic, see @Dickson_1919.
+[^1]: $f(s, n)$, the number of partitions of $n$ into exactly $s$ parts is more commonly expressed via the related quantity, $p(s, n)$, the number of partitions of $s$ into at most $n$ parts by $f(s, n) = p(s-n, n)$. In a letter to Bernoulli, dated 10 November 1742, Euler [-@Euler_1862] described calculation of $p(s, n)$ via recurrence relation; for an extensive history of the topic, see @Dickson_1919.
 
 ## Alternative Representation for Feasible Sets
 
