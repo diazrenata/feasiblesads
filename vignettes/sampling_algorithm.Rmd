@@ -15,59 +15,59 @@ knitr::opts_chunk$set(
 )
 ```
 
-# Feasible Set Definition
+# Species Abundance Distribution (SAD) Definition
 
-For $n \ge s \ge 1$, we define a feasible set as:
+For $n \ge s \ge 1$, we define a SAD as:
 $$
 \textbf{x} = \left(x_1, x_2, \dots, x_s\right)
 $$
 where
-$$
+\begin{align*}
 x_i \in \mathbb{Z}^+\\
 x_i \le x_j \textrm{ for } i \le j\\
 \sum{x_i} = n
-$$
+\end{align*}
 
-In effect, a feasible set represents a partition of $n$ individuals among $s$ classes (e.g. taxonomic categories), and we are interested only in the sizes of those classes, disregarding their specific identity (i.e. the classes are interchangeable).
+In effect, a SAD is a division of $n$ individuals among $s$ classes (i.e. taxonomic categories), and we are interested only in the sizes of those classes, disregarding their specific identity (i.e. the classes are interchangeable).
 
-In ecological parlance, a feasible set commonly represents a species-abundance distribution; though we note that we order the sizes of the classes in ascending, as opposed to descending order.
+Note that we deviate slightly from ecological convention in that we order the sizes of the classes in ascending, as opposed to descending order.
 
-# Feasible Set Space
+# Feasible Sets
 
-We define $F(s, n)$ to be the set of all possible feasible sets of a particular $s$ and $n$, and $f(s, n) = |F(s, n)|$ to be the cardinality of $F(s, n)$ (i.e. the number of feasible sets). We note that the values of $f(s, n)$ are identical to the number of partitions of $n$ into exactly $s$ parts[^1].
+A **Feasible Set**, $F(s, n)$, is the set of all possible SADs for a particular $s$ and $n$, and $f(s, n) = |F(s, n)|$ is the cardinality of $F(s, n)$ (i.e. the size of the Feasible Set). The values of $f(s, n)$ are identical to the number of partitions of $n$ into exactly $s$ parts[^1].
 
-[^1]: $f(s, n)$, the number of partitions of $n$ into exactly $s$ parts is more commonly expressed via the related quantity, $p(s, n)$, the number of partitions of $s$ into at most $n$ parts by $f(s, n) = p(s-n, n)$. In a letter to Bernoulli, dated 10 November 1742, Euler [-@Euler_1862] described calculation of $p(s, n)$ via recurrence relation; for an extensive history of the topic, see @Dickson_1919.
+[^1]: $f(s, n)$, the number of partitions of $n$ into exactly $s$ parts is more commonly expressed via the related quantity, $p(s, n)$, the number of partitions of $s$ into at most $n$ parts; the two are related by $f(s, n) = p(s-n, n)$. Some of the earliest calculations of $p(s, n)$ were performed by Euler in a 10 November 1742 letter to Bernoulli, in which values were computed via recurrence relation [-@Euler_1862]; for a more extensive history of the topic, see @Dickson_1919.
 
-## Alternative Representation for Feasible Sets
+## Alternative Representation
 
-First, we describe an alternative representation for feasible sets, where we describe the relative differences in sizes of consecutive classes instead of the sizes of the classes directly:
+First, we describe an alternative representation for SADs, where we describe the relative differences in sizes of consecutive classes instead of the sizes of the classes directly:
 $$
 \mathbf{y} = \left(y_1, y_2, \dots, y_s\right)
 $$
 where
-$$
-y_1 = x_1\\
-y_i = x_i - x_{i-1} \ge 0 \textrm{ for } i \ge 2
-$$
+\begin{align*}
+y_1 &= x_1\\
+y_i &= x_i - x_{i-1} \ge 0 \textrm{ for } i \ge 2
+\end{align*}
 
 Thus,
-\begin{align}
+\begin{align*}
 x_1 &= y_1\\
 x_2 &= y_1 + y_2\\
 x_3 &= y_1 + y_2 + y_3\\
 &\vdots\\
 x_i &= \sum_{j=1}^{j=i}{y_j}
-\end{align}
+\end{align*}
 
 and 
-\begin{align}
+\begin{align*}
 n &= x_1 + x_2 + \dots + x_s \\
   &= s \cdot y_1 + (s-1) \cdot y_2 + \dots + 1 \cdot y_s
-\end{align}
+\end{align*}
 
-## Generating Feasible Sets
+## Generating SADs
 
-We describe a generative approach for creating feasible sets.
+We describe a generative approach for creating a SAD.
 
 1. Set $i = 1$, the index of the class whose size will be determined next.<br />
    Set $n_r = n$, the number of individuals remaining to be allocated.<br />
@@ -81,9 +81,9 @@ Increment $i = i + 1$.
 
 4. Choose a value for $y_i$. The possible values are $[0, \lfloor \frac{n_r}{s_r}\rfloor]$.
 
-6. Repeat steps 3 and 4, until the feasible set is fully generated.
+6. Repeat steps 3 and 4, until the SAD is fully generated.
 
-## Counting Feasible Sets.
+## Counting Feasible Sets
 
 Mirroring the generative approach, we can define $f(s, n)$ recursively.
 
@@ -95,11 +95,13 @@ Mirroring the generative approach, we can define $f(s, n)$ recursively.
 
 where $r(1, n) = 1$ (there is only way to allocate $n$ individuals among 1 class).
 
-## Sampling Feasible Sets.
+## Sampling Feasible Sets
 
 We can also sample $F(s, n)$ uniformly, using a similarly recursive approach.
 
 1. For all $y_1 \in [1, \lfloor\frac{n}{s}\rfloor]$, compute $r(s-1, n-s \cdot y_1)$.
 2. The sum of these values of $r$ determine the relative probabilities for the corresponding value of $y_1$.
 3. Choose $y_1$ based on the corresponding weights, $\displaystyle \frac{r(s-1, n-s \cdot y_1)}{\sum_{y_1}{r(s-1, n-s \cdot y_1)}}$
-4. Choose the remaining $y_i$ according to the corresponding values of $r(s, n)$ as used to count the feasible sets.
+4. Choose the remaining $y_i$ according to the corresponding values of $r(s, n)$ as used to count the feasible set.
+
+## References
